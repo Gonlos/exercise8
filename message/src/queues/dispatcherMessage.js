@@ -1,5 +1,4 @@
-const kue = require("kue");
-const queue = kue.createQueue();
+const queue = require("./");
 const sendMessage = require("../controllers/sendMessage");
 const debug = require("debug")("debug:dispatcherMessage");
 

@@ -2,6 +2,9 @@ version: "3"
 services:
   message:
     build: message/
+    image: message
+    env_file:
+      - message/.env
     ports:
       - "9007:9007"
     links:
@@ -17,6 +20,9 @@ services:
       - redis
   credit:
     build: credit/
+    image: credit
+    env_file:
+      - credit/.env
     ports:
       - "9017:9017"
     links:

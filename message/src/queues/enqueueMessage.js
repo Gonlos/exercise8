@@ -1,6 +1,5 @@
 const uuidv1 = require("uuid/v1");
-const kue = require("kue");
-const queue = kue.createQueue();
+const queue = require("./");
 const getCredit = require("../clients/getCredit");
 const saveMessage = require("../clients/saveMessage");
 const debug = require("debug")("debug:enqueueMessage");
