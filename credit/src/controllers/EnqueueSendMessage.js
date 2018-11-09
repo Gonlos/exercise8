@@ -1,5 +1,5 @@
 const http = require("http");
-const { enqueueMessage } = require("../messagesQueue");
+const enqueueMessage = require("../queues/enqueueMessage");
 const getCredit = require("../clients/getCredit");
 
 module.exports = function(req, res) {
