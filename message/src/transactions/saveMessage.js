@@ -46,7 +46,7 @@ function saveMessageTransaction(newValue) {
 module.exports = function(messageParams, cb) {
   const cleanMessageParams = cleanClone(messageParams);
   saveMessageTransaction(cleanMessageParams)
-    .then(() => cb())
+    .then(result => cb(result))
     .catch(err => {
       cb(undefined, err);
     });
