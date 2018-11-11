@@ -1,20 +1,20 @@
 const queue = require("./");
 const debug = require("debug")("debug:enqueuePayment");
 
-const enqueuePayment = ({ messageId, cost }) => {
+const enqueuePayment = ({ messageId, location }) => {
   return new Promise((resolve, reject) => {
     const jobPayment = queue
       .create("payment", {
         messageId,
-        cost
+        location
       })
-      .delay(10000)
+      // .delay(10000)
       .save(function(err) {
         if (!err) {
-          debug("jobPayment:ok", { messageId, cost });
+          debug("jobPayment:ok", { messageId, location });
           return resolve({
             messageId,
-            cost
+            location
           });
         }
         debug("jobPayment:error", err);

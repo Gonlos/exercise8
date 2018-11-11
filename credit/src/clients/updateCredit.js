@@ -7,5 +7,5 @@ module.exports = function(creditParams, cb) {
   let conditions = {
     location: credit.location
   };
-  updateCreditTransaction(conditions, creditParams, cb);
+  return updateCreditTransaction(conditions, creditParams, cb);
 };

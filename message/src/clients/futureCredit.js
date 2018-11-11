@@ -10,26 +10,34 @@ class futureCredit {
   }
 
   initCredit() {
-    enqueuePayment({ messageId: 0, cost: 0 }).then(job => {
+    enqueuePayment({ messageId: 0, location: { cost: 0, name: "Default" } }).then(job => {
       debug("initCredit", job);
     });
   }
 
   updateCreditWorker() {
-    dispatcherUpdateCredit();
+    dispatcherUpdateCredit(this.updateCredit.bind(this));
   }
 
   updateCredit(credit, done) {
-    debug("updateCredit", credit);
-    queue.getJobsCount("messages").then(jobsCount => {
+    queue.getJobsCount("message").then(jobsCount => {
       this.credit = credit - jobsCount;
+      debug("updateCredit:new", `${credit} - ${jobsCount} = ${this.credit}`);
       done();
     });
   }
 
   getCredit() {
     debug("getCredit", this.credit);
-    return this.credit;
+    return new Promise((resolve, reject) => {
+      resolve(this.credit);
+    });
+  }
+
+  addCredit(amount) {
+    debug("addCredit", amount);
+    this.credit += amount;
+    debug("actual credit", this.credit);
   }
 }
 

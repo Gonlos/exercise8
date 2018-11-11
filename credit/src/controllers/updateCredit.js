@@ -3,7 +3,7 @@ const updatecredit = require("../clients/updateCredit");
 module.exports = function(req, res) {
   updatecredit(
     {
-      ...req.body,
+      $inc: { amount: req.body.amount },
       status: "ok"
     },
     function(_result, error) {

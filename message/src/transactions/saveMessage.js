@@ -3,10 +3,14 @@ const Message = require("../models/message");
 const { cleanClone } = require("../utils");
 
 function saveMessageReplica(replica, retries) {
+  const MessageReplica = Message("replica");
   if (retries > 0) {
-    replica.markModified("body");
-    return replica
-      .save()
+    // replica.markModified("body");
+    console.log("saveMessageReplica", replica);
+    return MessageReplica.findOneAndUpdate({ messageId: replica.messageId }, replica, {
+      upsert: true,
+      new: true
+    })
       .then(doc => {
         console.log("Message replicated successfully", doc);
         return doc;
@@ -21,7 +25,6 @@ function saveMessageReplica(replica, retries) {
 
 function saveMessageTransaction(newValue) {
   const MessagePrimary = Message();
-  const MessageReplica = Message("replica");
 
   let message = cleanClone(newValue);
   return MessagePrimary.findOneAndUpdate({ messageId: message.messageId }, message, {
@@ -33,8 +36,8 @@ function saveMessageTransaction(newValue) {
       return cleanClone(doc);
     })
     .then(clone => {
-      let replica = new MessageReplica(clone);
-      saveMessageReplica(replica, 3);
+      // let replica = new MessageReplica(clone);
+      saveMessageReplica(clone, 3);
       return clone;
     })
     .catch(err => {

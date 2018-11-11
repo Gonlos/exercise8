@@ -1,8 +1,13 @@
 const database = require("../database");
 const Credit = require("../models/credit");
 const { cleanClone } = require("../utils");
+const debug = require("debug")("debug:transactionUpdateCredit");
+const enqueueUpdateCredit = require("../queues/enqueueUpdateCredit");
 
 function updateCredit(creditModel, conditions, newValue) {
+  // conditions = {
+  //   $inc: { amount }
+  // };
   return creditModel.findOneAndUpdate(conditions, newValue, {
     new: true,
     upsert: true,
@@ -13,8 +18,8 @@ function updateCredit(creditModel, conditions, newValue) {
 function updateCreditTransaction(conditions, newValue) {
   const CreditPrimary = Credit();
   const CreditReplica = Credit("replica");
-
   let oldValue;
+  debug("newValue", newValue);
 
   return Promise.resolve(CreditPrimary.findOne(conditions))
     .then(doc => {
@@ -37,6 +42,7 @@ function updateCreditTransaction(conditions, newValue) {
       if (doc == null) {
         throw "Credit transaction couldn't be replicated";
       }
+      enqueueUpdateCredit({ credit: doc.amount, messageId: 0 });
       return doc;
     })
     .catch(err => {

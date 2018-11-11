@@ -22,7 +22,7 @@ module.exports = function(params, done) {
 
   postReq.on("response", postRes => {
     if (postRes.statusCode === 200) {
-      enqueuePayment({ messageId: params.messageId, cost: params.location.cost });
+      enqueuePayment({ messageId: params.messageId, location: params.location });
       saveMessage(
         {
           ...params,
@@ -59,7 +59,7 @@ module.exports = function(params, done) {
   postReq.on("timeout", () => {
     console.error("Timeout Exceeded!");
     postReq.abort();
-    enqueuePayment({ messageId: params.messageId, cost: params.location.cost });
+    enqueuePayment({ messageId: params.messageId, location: params.location });
     saveMessage(
       {
         ...params,
