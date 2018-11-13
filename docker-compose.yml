@@ -1,20 +1,36 @@
 version: "3"
 services:
   message:
+    hostname: message
     build: message/
     image: message
     env_file:
       - message/.env
     ports:
       - "9007:9007"
+    links:
+      - messageapp
+      - mongodb_message
+      - replica_message
+      - redis
+      - credit
+    depends_on:
+      - messageapp
+      - mongodb_message
+      - replica_message
+      - redis
   message2:
+    hostname: message2
     image: message
     env_file:
       - message/.env
     ports:
       - "9008:9007"
   message3:
+    hostname: message3
     image: message
+    env_file:
+      - message/.env
     ports:
       - "9009:9007"
   credit:
@@ -73,3 +89,18 @@ services:
       - 6379:6379
     volumes:
       - ./redis/data:/data
+
+  haproxy:
+    image: haproxy
+    ports:
+      - 80:80
+    volumes:
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    depends_on:
+      - message
+      - message2
+      - message3
+    links:
+      - message
+      - message2
+      - message3

@@ -7,6 +7,7 @@ const { Validator, ValidationError } = require("express-json-validator-middlewar
 const sendMessage = require("./src/controllers/EnqueueSendMessage");
 const getMessages = require("./src/controllers/getMessages");
 const getMessageStatus = require("./src/controllers/getMessageStatus");
+const hostname = require("./src/controllers/hostname");
 require("./src/queues/dispatcherMessage");
 require("./src/clients/futureCredit");
 
@@ -36,6 +37,7 @@ const messageSchema = {
   }
 };
 
+app.get("/hostname", hostname);
 app.post("/messages", bodyParser.json(), validate({ body: messageSchema }), sendMessage);
 
 app.get("/messages", getMessages);
